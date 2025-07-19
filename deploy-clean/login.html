@@ -22,10 +22,14 @@
                 <div class="logo">
                     <h1><i class="fas fa-music"></i> Harmony Music Store</h1>
                 </div>
-                <div class="auth-nav">
-                    <a href="index.html" class="nav-link">
-                        <i class="fas fa-home"></i> Volver al Inicio
-                    </a>
+                <ul class="nav-menu">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="register.html"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
         </nav>
@@ -85,6 +89,29 @@
 
     <script src="firebase-functions.js"></script>
     <script src="emergency-button-fix.js"></script>
+    
+    <!-- Script para menú hamburguesa -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (hamburger && navMenu) {
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+                
+                // Cerrar menú al hacer click en un enlace
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    });
+                });
+            }
+        });
+    </script>
     
     <style>
     /* Estilos específicos para la página de autenticación */
@@ -246,12 +273,13 @@
     }
 
     /* Header específico para auth */
-    .auth-nav {
+    .nav-menu {
         display: flex;
-        align-items: center;
+        list-style: none;
+        gap: 2rem;
     }
 
-    .nav-link {
+    .nav-menu a {
         color: white;
         text-decoration: none;
         font-weight: 500;
@@ -261,8 +289,22 @@
         transition: color 0.3s ease;
     }
 
-    .nav-link:hover {
+    .nav-menu a:hover {
         color: #ffd700;
+    }
+
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .hamburger span {
+        width: 25px;
+        height: 3px;
+        background: white;
+        margin: 3px 0;
+        transition: 0.3s;
     }
 
     /* Footer */
@@ -293,8 +335,45 @@
         }
 
         .nav-container {
+            position: relative;
+        }
+
+        .nav-menu {
+            position: fixed;
+            left: -100%;
+            top: 70px;
             flex-direction: column;
+            background-color: rgba(30, 60, 114, 0.95);
+            width: 100%;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+            padding: 2rem 0;
             gap: 1rem;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu li {
+            margin: 0.5rem 0;
+        }
+
+        .hamburger {
+            display: flex;
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
         }
 
         .logo h1 {
