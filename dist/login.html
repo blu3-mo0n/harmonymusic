@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - ComercioTech</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="firebase-functions.js"></script>
+</head>
+<body class="modern-auth-bg">
+    <div class="modern-auth-card">
+        <h2>Iniciar Sesión en ComercioTech</h2>
+        <form id="login-form">
+            <div class="modern-form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" required autocomplete="username">
+            </div>
+            <div class="modern-form-group">
+                <label for="login-password">Contraseña</label>
+                <input type="password" id="login-password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="modern-auth-btn">Iniciar Sesión</button>
+            <p class="modern-auth-switch">¿No tienes cuenta? <a href="register.html">Registrarse en ComercioTech</a></p>
+        </form>
+        <div id="login-message"></div>
+    </div>
+    <style>
+    body.modern-auth-bg {
+        min-height: 100vh;
+        background: linear-gradient(120deg, #1e3c72 0%, #2a5298 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+    .modern-auth-card {
+        background: #fff;
+        padding: 2.5rem 2rem 2rem 2rem;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(30,60,114,0.18);
+        min-width: 340px;
+        max-width: 370px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+    }
+    .modern-auth-card h2 {
+        color: #1e3c72;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .modern-form-group {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+    }
+    .modern-form-group label {
+        margin-bottom: 0.3rem;
+        color: #2a5298;
+        font-weight: 500;
+    }
+    .modern-form-group input {
+        padding: 0.7rem 1rem;
+        border: 1px solid #dbeafe;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: #f8fafc;
+        transition: border 0.2s;
+    }
+    .modern-form-group input:focus {
+        border: 1.5px solid #1e3c72;
+        outline: none;
+        background: #fff;
+    }
+    .modern-auth-btn {
+        width: 100%;
+        padding: 0.8rem 0;
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.08);
+        transition: background 0.2s;
+    }
+    .modern-auth-btn:hover {
+        background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
+    }
+    .modern-auth-switch {
+        margin-top: 0.7rem;
+        font-size: 0.97rem;
+        color: #555;
+    }
+    .modern-auth-switch a {
+        color: #1e3c72;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    #login-message {
+        margin-top: 0.7rem;
+        font-size: 1rem;
+        min-height: 1.2em;
+        text-align: center;
+    }
+    </style>
+    <script>
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const msg = document.getElementById('login-message');
+        msg.textContent = '';
+        try {
+            const result = await window.FirebaseManager.login(email, password);
+            if (result.success) {
+                msg.textContent = '¡Inicio de sesión exitoso! Redirigiendo...';
+                msg.style.color = 'green';
+                setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+            } else {
+                msg.textContent = 'Error: ' + result.error;
+                msg.style.color = 'red';
+            }
+        } catch (error) {
+            msg.textContent = 'Error: ' + error.message;
+            msg.style.color = 'red';
+        }
+    });
+    </script>
+</body>
+</html>

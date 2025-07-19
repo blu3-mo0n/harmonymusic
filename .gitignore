@@ -90,7 +90,7 @@ web_modules/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist  # Comentado para permitir la carpeta dist de este proyecto
 
 # Gatsby files
 .cache/
