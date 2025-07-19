@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony Music Store - Tienda de Música</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics-compat.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h1><i class="fas fa-music"></i> Harmony Music</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#catalogo">Catálogo</a></li>
+                    <li><a href="#generos">Géneros</a></li>
+                    <li><a href="#admin">Administración</a></li>
+                    <li><a href="#sobre-nosotros">Sobre Nosotros</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+                <div class="user-section">
+                    <div id="user-info" class="user-info" style="display: none;">
+                        <!-- User info will be populated by JavaScript -->
+                    </div>
+                    <div class="auth-buttons">
+                        <button onclick="showLoginForm()" class="auth-btn">Iniciar Sesión</button>
+                        <button onclick="showRegisterForm()" class="auth-btn">Registrarse</button>
+                    </div>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Authentication Section -->
+    <section id="auth-section" class="auth-section" style="display: none;">
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div id="login-section" class="auth-form">
+                <h3>Iniciar Sesión</h3>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña:</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="auth-submit-btn">Iniciar Sesión</button>
+                    <p class="auth-switch">¿No tienes cuenta? <a href="#" onclick="showRegisterForm()">Registrarse</a></p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-section" class="auth-form" style="display: none;">
+                <h3>Registrarse</h3>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Nombre:</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email:</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Contraseña:</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-role">Tipo de Usuario:</label>
+                        <select id="register-role">
+                            <option value="cliente">Cliente</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-submit-btn">Registrarse</button>
+                    <p class="auth-switch">¿Ya tienes cuenta? <a href="#" onclick="showLoginForm()">Iniciar Sesión</a></p>
+                </form>
+            </div>
+            
+            <button onclick="hideAuthSection()" class="close-auth">×</button>
+        </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-container">
+            <h2>Bienvenido a ComercioTec</h2>
+            <p>Descubre la mejor música de todos los géneros y épocas</p>
+            <button class="cta-button">Ver Catálogo</button>
+        </div>
+    </section>
+
+    <!-- Catálogo Section -->
+    <section id="catalogo" class="catalog">
+        <div class="container">
+            <h2>Catálogo Musical</h2>
+            <div class="catalog-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="rock">Rock</button>
+                <button class="filter-btn" data-filter="pop">Pop</button>
+                <button class="filter-btn" data-filter="jazz">Jazz</button>
+                <button class="filter-btn" data-filter="classical">Clásica</button>
+                <button class="filter-btn" data-filter="electronic">Electrónica</button>
+                <button class="filter-btn" data-filter="rap">Rap</button>
+            </div>
+            <div class="catalog-grid">
+                <div class="album-card" data-category="rock">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=Rock+Album" alt="Rock Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Greatest Rock Hits</h3>
+                        <p>Artista: Various Artists</p>
+                        <p class="price">$19.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+                <div class="album-card" data-category="pop">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=Pop+Album" alt="Pop Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Pop Sensations</h3>
+                        <p>Artista: Taylor Swift</p>
+                        <p class="price">$24.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+                <div class="album-card" data-category="jazz">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=Jazz+Album" alt="Jazz Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Smooth Jazz Collection</h3>
+                        <p>Artista: Miles Davis</p>
+                        <p class="price">$22.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+                <div class="album-card" data-category="classical">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/FFA07A/FFFFFF?text=Classical" alt="Classical Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Classical Masterpieces</h3>
+                        <p>Artista: Beethoven</p>
+                        <p class="price">$18.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+                <div class="album-card" data-category="rock">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=Metal+Album" alt="Metal Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Heavy Metal Thunder</h3>
+                        <p>Artista: Metallica</p>
+                        <p class="price">$26.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+                <div class="album-card" data-category="pop">
+                    <div class="album-image">
+                        <img src="https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=Indie+Pop" alt="Indie Pop Album">
+                        <div class="album-overlay">
+                            <button class="play-btn"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="album-info">
+                        <h3>Indie Pop Vibes</h3>
+                        <p>Artista: Arctic Monkeys</p>
+                        <p class="price">$21.99</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Géneros Section -->
+    <section id="generos" class="genres">
+        <div class="container">
+            <h2>Géneros Musicales</h2>
+            <div class="genres-grid">
+                <div class="genre-card">
+                    <div class="genre-icon">🎸</div>
+                    <h3>Rock</h3>
+                    <p>Desde clásicos hasta metal moderno</p>
+                    <span class="album-count">150+ álbumes</span>
+                </div>
+                <div class="genre-card">
+                    <div class="genre-icon">🎤</div>
+                    <h3>Pop</h3>
+                    <p>Los éxitos más populares del momento</p>
+                    <span class="album-count">200+ álbumes</span>
+                </div>
+                <div class="genre-card">
+                    <div class="genre-icon">🎷</div>
+                    <h3>Jazz</h3>
+                    <p>Música suave y sofisticada</p>
+                    <span class="album-count">80+ álbumes</span>
+                </div>
+                <div class="genre-card">
+                    <div class="genre-icon">🎼</div>
+                    <h3>Clásica</h3>
+                    <p>Obras maestras de todos los tiempos</p>
+                    <span class="album-count">120+ álbumes</span>
+                </div>
+                <div class="genre-card">
+                    <div class="genre-icon">🎵</div>
+                    <h3>Electrónica</h3>
+                    <p>Sonidos modernos y experimentales</p>
+                    <span class="album-count">90+ álbumes</span>
+                </div>
+                <div class="genre-card">
+                    <div class="genre-icon">🎺</div>
+                    <h3>Blues</h3>
+                    <p>El alma de la música americana</p>
+                    <span class="album-count">60+ álbumes</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Administración CRUD Section -->
+    <section id="admin" class="admin">
+        <div class="container">
+            <h2>Administración del Catálogo</h2>
+            <div class="admin-controls">
+                <button class="btn-primary" id="showAddForm">
+                    <i class="fas fa-plus"></i> Agregar Álbum
+                </button>
+                <button class="btn-success" id="populateDatabase">
+                    <i class="fas fa-database"></i> Poblar Base de Datos
+                </button>
+                <button class="btn-secondary" id="exportData">
+                    <i class="fas fa-download"></i> Exportar Datos
+                </button>
+                <button class="btn-secondary" id="importData">
+                    <i class="fas fa-upload"></i> Importar Datos
+                </button>
+            </div>
+
+            <!-- Formulario para Agregar/Editar Álbum -->
+            <div id="albumForm" class="album-form hidden">
+                <h3 id="formTitle">Agregar Nuevo Álbum</h3>
+                <form id="crudForm">
+                    <input type="hidden" id="albumId" name="albumId">
+                    
+                    <div class="form-group">
+                        <label for="albumTitle">Título del Álbum:</label>
+                        <input type="text" id="albumTitle" name="albumTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="albumArtist">Artista:</label>
+                        <input type="text" id="albumArtist" name="albumArtist" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="albumPrice">Precio:</label>
+                        <input type="number" id="albumPrice" name="albumPrice" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="albumGenre">Género:</label>
+                        <select id="albumGenre" name="albumGenre" required>
+                            <option value="">Seleccionar género</option>
+                            <option value="rock">Rock</option>
+                            <option value="pop">Pop</option>
+                            <option value="jazz">Jazz</option>
+                            <option value="classical">Clásica</option>
+                            <option value="electronic">Electrónica</option>
+                            <option value="blues">Blues</option>
+                            <option value="rap">Rap/Hip-Hop</option>
+                            <option value="metal">Metal</option>
+                            <option value="country">Country</option>
+                            <option value="reggae">Reggae</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="albumImage">URL de la Imagen:</label>
+                        <input type="url" id="albumImage" name="albumImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="albumDescription">Descripción:</label>
+                        <textarea id="albumDescription" name="albumDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                        <button type="button" class="btn-secondary" id="cancelForm">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla de Administración -->
+            <div class="admin-table">
+                <h3>Lista de Álbumes</h3>
+                <div class="table-controls">
+                    <input type="text" id="searchAdmin" placeholder="Buscar álbumes...">
+                    <select id="filterGenreAdmin">
+                        <option value="">Todos los géneros</option>
+                        <option value="rock">Rock</option>
+                        <option value="pop">Pop</option>
+                        <option value="jazz">Jazz</option>
+                        <option value="classical">Clásica</option>
+                        <option value="electronic">Electrónica</option>
+                        <option value="blues">Blues</option>
+                        <option value="rap">Rap/Hip-Hop</option>
+                        <option value="metal">Metal</option>
+                        <option value="country">Country</option>
+                        <option value="reggae">Reggae</option>
+                    </select>
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="albumsTable">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Título</th>
+                                <th>Artista</th>
+                                <th>Género</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="albumsTableBody">
+                            <!-- Los álbumes se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre Nosotros Section -->
+    <section id="sobre-nosotros" class="about">
+    <!-- Sobre Nosotros Section -->
+    <section id="sobre-nosotros" class="about">
+        <div class="container">
+            <h2>Sobre Harmony Music Store</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Harmony Music Store es tu destino número uno para descubrir y adquirir la mejor música de todos los géneros y épocas. Desde 2020, nos hemos dedicado a ofrecer una experiencia musical única, conectando a los amantes de la música con sus artistas favoritos.</p>
+                    <p>Nuestra plataforma cuenta con un catálogo extenso que incluye álbumes de rock, pop, jazz, música clásica, electrónica y mucho más. Trabajamos directamente con sellos discográficos y artistas independientes para ofrecerte siempre la mejor calidad y las últimas novedades.</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <h3>500+</h3>
+                            <p>Álbumes</p>
+                        </div>
+                        <div class="stat">
+                            <h3>50+</h3>
+                            <p>Artistas</p>
+                        </div>
+                        <div class="stat">
+                            <h3>10K+</h3>
+                            <p>Clientes Felices</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-compact-disc"></i>
+                        <span>Harmony Music</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios Section -->
+    <section id="servicios" class="services">
+        <div class="container">
+            <h2>Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-shipping-fast"></i></div>
+                    <h3>Envío Rápido</h3>
+                    <p>Recibe tus álbumes favoritos en 24-48 horas con nuestro servicio de envío express.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-headphones"></i></div>
+                    <h3>Escucha Previa</h3>
+                    <p>Prueba antes de comprar con nuestro sistema de escucha previa de 30 segundos.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-award"></i></div>
+                    <h3>Calidad Premium</h3>
+                    <p>Todos nuestros álbumes son originales y cuentan con la mejor calidad de audio.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-user-friends"></i></div>
+                    <h3>Recomendaciones</h3>
+                    <p>Descubre nueva música basada en tus gustos y preferencias personales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <h2>Contacto</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="contact-item">
+                        <span class="icon"><i class="fas fa-envelope"></i></span>
+                        <p>info@harmonymusic.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon"><i class="fas fa-phone"></i></span>
+                        <p>+56 2 2345 6789</p>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                        <p>Av. Providencia 1234, Santiago, Chile</p>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                        <p>Lun - Vie: 9:00 AM - 7:00 PM</p>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <input type="text" name="nombre" placeholder="Tu Nombre" required>
+                    <input type="email" name="email" placeholder="Tu Email" required>
+                    <input type="text" name="asunto" placeholder="Asunto" required>
+                    <textarea name="mensaje" placeholder="Tu Mensaje" rows="5" required></textarea>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-music"></i> Harmony Music</h3>
+                    <p>Tu tienda de música online de confianza</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Catálogo</h4>
+                    <ul>
+                        <li><a href="#">Novedades</a></li>
+                        <li><a href="#">Más Vendidos</a></li>
+                        <li><a href="#">Ofertas</a></li>
+                        <li><a href="#">Pre-órdenes</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Géneros</h4>
+                    <ul>
+                        <li><a href="#">Rock</a></li>
+                        <li><a href="#">Pop</a></li>
+                        <li><a href="#">Jazz</a></li>
+                        <li><a href="#">Clásica</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="#">Ayuda</a></li>
+                        <li><a href="#">Envíos</a></li>
+                        <li><a href="#">Devoluciones</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Harmony Music Store. Todos los derechos reservados.</p>
+                <p>Desplegado con Firebase Hosting</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="firebase-functions.js"></script>
+    <script src="script.js"></script>
+    <script src="populate-database.js"></script>
+</body>
+</html>

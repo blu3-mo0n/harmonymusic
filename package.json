@@ -1,0 +1,52 @@
+{
+  "name": "harmony-music-store",
+  "version": "1.0.0",
+  "description": "Tienda de música online con Firebase - Proyecto ComercioTech",
+  "main": "index.js",
+  "scripts": {
+    "start": "firebase serve",
+    "build": "npm run copy-files",
+    "copy-files": "cp -r dist/* public/",
+    "deploy": "firebase deploy",
+    "dev": "firebase serve --only hosting",
+    "dev-aws": "firebase serve --only hosting --host 0.0.0.0 --port 5000",
+    "serve": "firebase serve --only hosting --port 5000",
+    "serve-simple": "cd dist && python3 -m http.server 8000",
+    "serve-node": "npx http-server dist -p 8000 -c-1 -a 0.0.0.0",
+    "populate": "node populate-database.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "music",
+    "store",
+    "firebase",
+    "firestore",
+    "ecommerce",
+    "tienda",
+    "musica"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^10.7.1",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tu-usuario/harmony-music-store.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/harmony-music-store/issues"
+  },
+  "homepage": "https://comerciotech-75d66.web.app",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "firebase": {
+    "project": "comerciotech-75d66"
+  }
+}
