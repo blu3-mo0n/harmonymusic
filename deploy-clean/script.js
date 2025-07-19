@@ -194,14 +194,131 @@ playButtons.forEach(button => {
 
 // Cart functions
 function addToCart(album) {
-    cart.push(album);
+    // Buscar si el álbum ya existe en el carrito
+    const existingItem = cart.find(item => item.id === album.id);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            ...album,
+            quantity: 1
+        });
+    }
+    
     updateCartDisplay();
+    saveCartToLocalStorage();
     saveCartToFirebase(album);
 }
 
 function updateCartDisplay() {
-    // Actualizar contador del carrito (si tienes uno en el header)
-    console.log('Cart items:', cart.length);
+    const cartCount = document.getElementById('cart-count');
+    const cartItems = document.getElementById('cart-items');
+    const cartFooter = document.getElementById('cart-footer');
+    const cartTotal = document.getElementById('cart-total');
+    
+    // Actualizar contador
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+    cartCount.classList.toggle('hide', totalItems === 0);
+    
+    // Actualizar contenido del carrito
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-basket"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        `;
+        cartFooter.style.display = 'none';
+    } else {
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.title}</div>
+                    <div class="cart-item-artist">${item.artist}</div>
+                    <div class="cart-item-price">$${item.price}</div>
+                </div>
+                <div class="cart-item-actions">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                        <span class="quantity-text">${item.quantity}</span>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${item.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        // Calcular total
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = total.toFixed(2);
+        cartFooter.style.display = 'block';
+    }
+}
+
+function updateQuantity(id, change) {
+    const item = cart.find(item => item.id === id);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            removeFromCart(id);
+        } else {
+            updateCartDisplay();
+            saveCartToLocalStorage();
+        }
+    }
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCartDisplay();
+    saveCartToLocalStorage();
+    showNotification('Producto eliminado del carrito');
+}
+
+function clearCart() {
+    cart = [];
+    updateCartDisplay();
+    saveCartToLocalStorage();
+    showNotification('Carrito vaciado');
+    toggleCart(); // Cerrar el carrito
+}
+
+function toggleCart() {
+    const cartDropdown = document.getElementById('cart-dropdown');
+    cartDropdown.classList.toggle('show');
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        showNotification('Tu carrito está vacío', 'error');
+        return;
+    }
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    showNotification(`Procesando pago por $${total.toFixed(2)}...`);
+    
+    // Aquí puedes añadir la lógica de pago real
+    setTimeout(() => {
+        clearCart();
+        showNotification('¡Compra realizada con éxito!', 'success');
+    }, 2000);
+}
+
+function saveCartToLocalStorage() {
+    localStorage.setItem('harmonyCart', JSON.stringify(cart));
+}
+
+function loadCartFromLocalStorage() {
+    const savedCart = localStorage.getItem('harmonyCart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartDisplay();
+    }
 }
 
 function saveCartToFirebase(album) {
@@ -420,6 +537,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load catalog
     loadCatalog();
+    
+    // Load cart from localStorage
+    loadCartFromLocalStorage();
+    
+    // Add click outside to close cart
+    document.addEventListener('click', (e) => {
+        const cartContainer = e.target.closest('.cart-icon-container');
+        const cartDropdown = document.getElementById('cart-dropdown');
+        
+        if (!cartContainer && cartDropdown && cartDropdown.classList.contains('show')) {
+            toggleCart();
+        }
+    });
     
     // Track page view
     trackEvent('page_view', {
