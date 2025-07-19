@@ -28,7 +28,7 @@ let albums = [
         artist: "Various Artists",
         genre: "rock",
         price: 19.99,
-        image: "https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=Rock+Album",
+        image: "img/rock.jpg",
         description: "Una colección de los mejores éxitos del rock"
     },
     {
@@ -37,7 +37,7 @@ let albums = [
         artist: "Taylor Swift",
         genre: "pop",
         price: 24.99,
-        image: "https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=Pop+Album",
+        image: "img/pop.jpg",
         description: "Los éxitos pop más populares del momento"
     },
     {
@@ -46,7 +46,7 @@ let albums = [
         artist: "Miles Davis",
         genre: "jazz",
         price: 22.99,
-        image: "https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=Jazz+Album",
+        image: "img/jazz.jpg",
         description: "Jazz suave y relajante para todos los gustos"
     },
     {
@@ -55,7 +55,7 @@ let albums = [
         artist: "Beethoven",
         genre: "classical",
         price: 18.99,
-        image: "https://via.placeholder.com/300x300/FFA07A/FFFFFF?text=Classical",
+        image: "img/clasica.jpg",
         description: "Obras maestras de la música clásica"
     },
     {
@@ -64,7 +64,7 @@ let albums = [
         artist: "Metallica",
         genre: "rock",
         price: 26.99,
-        image: "https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=Metal+Album",
+        image: "img/heavy metal.jpg",
         description: "El mejor heavy metal de todos los tiempos"
     },
     {
@@ -73,7 +73,7 @@ let albums = [
         artist: "Arctic Monkeys",
         genre: "pop",
         price: 21.99,
-        image: "https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=Indie+Pop",
+        image: "img/indiepop.jpg",
         description: "Sonidos indie pop frescos y modernos"
     }
 ];
