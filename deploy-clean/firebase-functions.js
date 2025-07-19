@@ -1,4 +1,5 @@
 // ===== FIREBASE CONFIGURATION AND FUNCTIONS =====
+console.log('🔥 firebase-functions.js cargando...');
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -21,20 +22,22 @@ let userRole = null;
 // Initialize Firebase
 function initializeFirebase() {
     try {
+        console.log('🔥 Inicializando Firebase...');
         if (typeof firebase !== 'undefined') {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
             auth = firebase.auth();
             initialized = true;
-            console.log('Firebase initialized successfully');
+            console.log('✅ Firebase inicializado correctamente');
             
             // Monitor authentication state
             auth.onAuthStateChanged(onAuthStateChanged);
         } else {
-            console.warn('Firebase not loaded');
+            console.warn('⚠️ Firebase SDK no disponible');
+            setTimeout(initializeFirebase, 500); // Reintentar
         }
     } catch (error) {
-        console.error('Error initializing Firebase:', error);
+        console.error('❌ Error inicializando Firebase:', error);
     }
 }
 
@@ -42,13 +45,14 @@ function initializeFirebase() {
 
 // Authentication state observer
 function onAuthStateChanged(user) {
+    console.log('🔐 Estado de autenticación cambió:', user ? 'Logueado' : 'Deslogueado');
     currentUser = user;
     if (user) {
-        console.log('User signed in:', user.email);
+        console.log('👤 Usuario:', user.email);
         loadUserRole(user.uid);
         updateUIForUser(user);
     } else {
-        console.log('User signed out');
+        console.log('👤 Usuario deslogueado');
         currentUser = null;
         userRole = null;
         updateUIForGuest();
@@ -66,9 +70,9 @@ async function loadUserRole(userId) {
         } else {
             userRole = 'cliente';
         }
-        console.log('User role loaded:', userRole);
+        console.log('👤 Rol del usuario:', userRole);
     } catch (error) {
-        console.error('Error loading user role:', error);
+        console.error('❌ Error cargando rol:', error);
         userRole = 'cliente';
     }
 }
@@ -162,6 +166,7 @@ function checkAdmin() {
 
 // Update UI for authenticated user
 function updateUIForUser(user) {
+    console.log('🎨 Actualizando UI para usuario autenticado');
     const userInfo = document.getElementById('user-info');
     const authButtons = document.querySelector('.auth-buttons');
     
@@ -184,6 +189,7 @@ function updateUIForUser(user) {
 
 // Update UI for guest user
 function updateUIForGuest() {
+    console.log('🎨 Actualizando UI para usuario invitado');
     const userInfo = document.getElementById('user-info');
     const authButtons = document.querySelector('.auth-buttons');
     
@@ -287,17 +293,18 @@ function handleLogout() {
 
 // Show login form
 function showLoginForm() {
-    console.log('Redirecting to login form');
+    console.log('🔗 Redirigiendo a login');
     window.location.href = 'login.html';
 }
 
 // Show register form
 function showRegisterForm() {
-    console.log('Redirecting to register form');
+    console.log('🔗 Redirigiendo a registro');
     window.location.href = 'register.html';
 }
 
 // ===== GLOBAL EXPORTS =====
+console.log('🌍 Exportando funciones globalmente...');
 
 // Export all functions to window object
 window.registerUser = registerUser;
@@ -312,13 +319,13 @@ window.handleLogout = handleLogout;
 window.showLoginForm = showLoginForm;
 window.showRegisterForm = showRegisterForm;
 
+console.log('✅ Funciones exportadas:', Object.keys(window).filter(key => key.startsWith('register') || key.startsWith('login') || key.startsWith('logout') || key.startsWith('show') || key.startsWith('handle')));
+
 // ===== INITIALIZATION =====
 
 // Initialize Firebase when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing Firebase...');
-    
-    // Wait a bit to ensure Firebase SDK is loaded
+    console.log('📄 DOM cargado, inicializando Firebase...');
     setTimeout(() => {
         initializeFirebase();
     }, 100);
@@ -326,10 +333,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialize Firebase immediately if possible
 if (typeof firebase !== 'undefined') {
-    console.log('Firebase detected, initializing immediately...');
+    console.log('🔥 Firebase detectado, inicializando inmediatamente...');
     initializeFirebase();
 } else {
-    console.log('Firebase not yet loaded, waiting for DOM...');
+    console.log('⏳ Firebase no disponible aún, esperando...');
 }
 
-console.log('firebase-functions.js loaded successfully');
+// Test functions availability
+setTimeout(() => {
+    console.log('🧪 Probando disponibilidad de funciones:');
+    console.log('showLoginForm:', typeof window.showLoginForm);
+    console.log('showRegisterForm:', typeof window.showRegisterForm);
+    console.log('handleLogin:', typeof window.handleLogin);
+    console.log('handleRegistration:', typeof window.handleRegistration);
+}, 1000);
+
+console.log('✅ firebase-functions.js cargado completamente');
